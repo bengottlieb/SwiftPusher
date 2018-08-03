@@ -46,6 +46,16 @@
 		B5A482591AE5DE6A001636BE /* CoreAudio.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B5A482581AE5DE6A001636BE /* CoreAudio.framework */; };
 /* End PBXBuildFile section */
 
+/* Begin PBXContainerItemProxy section */
+		B5162C422114001900E7D7B7 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = B504E60B1A89230F001B414B /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = B504E6AE1A898110001B414B;
+			remoteInfo = SwiftPusher_Mac;
+		};
+/* End PBXContainerItemProxy section */
+
 /* Begin PBXCopyFilesBuildPhase section */
 		B5A482541AE5DE2F001636BE /* CopyFiles */ = {
 			isa = PBXCopyFilesBuildPhase;
@@ -171,11 +181,11 @@
 		B5162C172113B26500E7D7B7 /* Framework Code */ = {
 			isa = PBXGroup;
 			children = (
-				B5162C182113B26500E7D7B7 /* Pusher.Certificate.swift */,
+				B5162C1C2113B26500E7D7B7 /* Pusher.swift */,
 				B5162C192113B26500E7D7B7 /* Pusher.Error.swift */,
 				B5162C1A2113B26500E7D7B7 /* Pusher.Notification.swift */,
 				B5162C1B2113B26500E7D7B7 /* Pusher.SSLConnection.swift */,
-				B5162C1C2113B26500E7D7B7 /* Pusher.swift */,
+				B5162C182113B26500E7D7B7 /* Pusher.Certificate.swift */,
 			);
 			name = "Framework Code";
 			path = "SwiftPusher/Framework Code";
@@ -321,6 +331,7 @@
 			buildRules = (
 			);
 			dependencies = (
+				B5162C432114001900E7D7B7 /* PBXTargetDependency */,
 			);
 			name = SwiftPusherTest_Mac;
 			productName = SwiftPusherTest_Mac;
@@ -483,6 +494,14 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		B5162C432114001900E7D7B7 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = B504E6AE1A898110001B414B /* SwiftPusher_Mac */;
+			targetProxy = B5162C422114001900E7D7B7 /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
 
 /* Begin PBXVariantGroup section */
 		B5162C342113B4BA00E7D7B7 /* MainMenu.xib */ = {
@@ -808,7 +827,7 @@
 				DEBUG_INFORMATION_FORMAT = dwarf;
 				DEVELOPMENT_TEAM = YY6CWUX533;
 				GCC_C_LANGUAGE_STANDARD = gnu11;
-				INFOPLIST_FILE = SwiftPusherTest_Mac/Info.plist;
+				INFOPLIST_FILE = "$(SRCROOT)/Tests/SwiftPusherTest_Mac/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks";
 				MACOSX_DEPLOYMENT_TARGET = 10.13;
 				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
@@ -840,7 +859,7 @@
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				DEVELOPMENT_TEAM = YY6CWUX533;
 				GCC_C_LANGUAGE_STANDARD = gnu11;
-				INFOPLIST_FILE = SwiftPusherTest_Mac/Info.plist;
+				INFOPLIST_FILE = "$(SRCROOT)/Tests/SwiftPusherTest_Mac/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks";
 				MACOSX_DEPLOYMENT_TARGET = 10.13;
 				MTL_FAST_MATH = YES;

@@ -67,7 +67,7 @@ extension Data {
 		self.append(data)
 	}
 	
-	public var hexString: String {
+	var hexString: String {
 		
 		let result: String = self.withUnsafeBytes { (bytes: UnsafePointer<UInt8>) -> String in
 			var string = ""

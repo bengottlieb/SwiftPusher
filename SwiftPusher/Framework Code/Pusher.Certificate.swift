@@ -13,6 +13,17 @@ extension Pusher {
 		public let pkcs12Data: Data
 		public let password: String
 		
+		public static func validate(pkcs: Data, password: String) -> Bool {
+			let cert = Certificate(data: pkcs, password: password)
+			
+			do {
+				return try cert.buildSSLCertificate() != nil
+			} catch {
+				return false
+			}
+			
+		}
+		
 		public init(data: Data, password: String) {
 			self.pkcs12Data = data
 			self.password = password
@@ -22,6 +33,12 @@ extension Pusher {
 			let options = [kSecImportExportPassphrase as String: self.password]
 			var items: CFArray?
 			let status = SecPKCS12Import(self.pkcs12Data as CFData, options as CFDictionary, &items)
+			
+			if status == errSecAuthFailed {		//  -25293
+				throw Pusher.Error.pkcs12Password
+			} else if status != errSecSuccess {
+				print("Error: \(status)")
+			}
 			
 			guard let parts = items as? [[String: Any]], status == errSecSuccess else { throw Pusher.Error.pkcs12Decode }
 			
