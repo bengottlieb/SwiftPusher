@@ -28,6 +28,10 @@ extension Pusher {
 			self.identifier = Int(Date().timeIntervalSince1970)
 		}
 		
+		public convenience init(payload: [String: Any]? = nil, target: Data) {
+			self.init(payload: payload, target: target.hexString)
+		}
+
 		var fullJSONPayload: [String: Any] {
 			var aps = self.payload ?? [:]
 			
