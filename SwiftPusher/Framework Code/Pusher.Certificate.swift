@@ -9,7 +9,7 @@
 import Foundation
 
 extension Pusher {
-	public struct Certificate {
+	public struct Certificate: Equatable {
 		public let pkcs12Data: Data
 		public let password: String
 		
@@ -22,6 +22,10 @@ extension Pusher {
 				return false
 			}
 			
+		}
+		
+		static public func ==(lhs: Certificate, rhs: Certificate) -> Bool {
+			return lhs.pkcs12Data == rhs.pkcs12Data && lhs.password == rhs.password
 		}
 		
 		public init(data: Data, password: String) {

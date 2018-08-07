@@ -49,6 +49,10 @@ extension Pusher {
 			var readCount: size_t = 0
 			guard let buffer = malloc(count) else { throw Pusher.Error.outOfMemory }
 			
+			if self.context == nil {
+				self.disconnect()
+				throw Pusher.Error.missingContext
+			}
 			let result = SSLRead(self.context, buffer, count, &readCount)
 			
 			print("Read \(readCount) bytes")
@@ -64,6 +68,11 @@ extension Pusher {
 		func write(_ data: Data) throws -> Int {
 			var written: size_t = 0
 			
+			if self.context == nil {
+				self.disconnect()
+				throw Pusher.Error.missingContext
+			}
+
 			let result = data.withUnsafeBytes { bytes in
 				SSLWrite(self.context, bytes, data.count, &written)
 			}

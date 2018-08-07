@@ -18,8 +18,12 @@ public class Pusher {
 	public static let defaultPort = 2195
 	var activeConnection: SSLConnection!
 	var internalQueue = DispatchQueue(label: "Pusher_queue")
+	var certificate: Certificate?
 	
 	public func load(certificate: Certificate) throws {
+		if certificate == self.certificate { return }
+		
+		self.certificate = certificate
 		self.activeConnection?.disconnect()
 		self.activeConnection = SSLConnection(certificate: certificate)
 		try self.activeConnection?.connect()
