@@ -8,11 +8,14 @@
 
 import Foundation
 
+public protocol NotificationTarget { }
+extension String: NotificationTarget {}
+extension Data: NotificationTarget {}
 
 extension Pusher {
 	public class Notification {
 		public var payload: [String: Any]?
-		public var target: String?
+		public var target: NotificationTarget?
 		public var title: String?
 		public var soundName: String?
 		public var badgeCount: Int?
@@ -22,14 +25,10 @@ extension Pusher {
 		public let identifier: Int
 		public var priority = 5
 		
-		public init(payload: [String: Any]? = nil, target: String? = nil) {
+		public init(payload: [String: Any]? = nil, target: NotificationTarget? = nil) {
 			self.payload = payload
 			self.target = target
 			self.identifier = Int(Date().timeIntervalSince1970)
-		}
-		
-		public convenience init(payload: [String: Any]? = nil, target: Data) {
-			self.init(payload: payload, target: target.hexString)
 		}
 
 		var fullJSONPayload: [String: Any] {
@@ -45,8 +44,18 @@ extension Pusher {
 		
 		public var payloadData: Data? {
 			var data = Data(bytes: [0, 0, 0, 0, 0])
+			var tokenData: Data?
 			
-			if let tokenData = self.target?.dataFromHex { data.append(data: tokenData, withPrefix: 1) }
+			if let data = self.target as? Data {
+				tokenData = data
+			} else if let string = self.target as? String {
+				tokenData = string.dataFromHex
+			} else {
+				return nil
+			}
+			
+			guard let pushedTokenData = tokenData else { return nil }
+			data.append(data: pushedTokenData, withPrefix: 1)
 			if let json = try? JSONSerialization.data(withJSONObject: self.fullJSONPayload, options: []) { data.append(data: json, withPrefix: 2) }
 			
 			
