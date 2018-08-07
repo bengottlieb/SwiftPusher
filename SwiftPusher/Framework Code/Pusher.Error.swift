@@ -10,7 +10,7 @@ import Foundation
 
 extension Pusher {
 	public enum Error: String, Swift.Error {
-		case outOfMemory, unableToConstructNotificationData, noActiveConnection, noCertificateAvailable, missingContext
+		case outOfMemory, unableToConstructNotificationData, noActiveConnection, noCertificateAvailable, missingContext, missingCertificate
 		
 		case APNSProcessing, APNSMissingDeviceToken, APNSMissingTopic, APNSMissingPayload, APNSInvalidTokenSize, APNSInvalidTopicSize, APNSInvalidPayloadSize, APNSInvalidTokenContent, APNSUnknownReason, APNSShutdown
 		

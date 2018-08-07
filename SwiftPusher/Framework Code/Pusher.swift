@@ -23,10 +23,21 @@ public class Pusher {
 	public func load(certificate: Certificate) throws {
 		if certificate == self.certificate { return }
 		
+		self.disconnect()
 		self.certificate = certificate
-		self.activeConnection?.disconnect()
 		self.activeConnection = SSLConnection(certificate: certificate)
 		try self.activeConnection?.connect()
+	}
+	
+	public func restartConnection() throws {
+		guard let cert = self.certificate else { throw Pusher.Error.missingCertificate }
+		self.disconnect()
+		try self.load(certificate: cert)
+	}
+	
+	public func disconnect() {
+		self.activeConnection?.disconnect()
+		self.certificate = nil
 	}
 	
 	public func send(_ notification: Notification, completion: @escaping (Swift.Error?) -> Void) {
