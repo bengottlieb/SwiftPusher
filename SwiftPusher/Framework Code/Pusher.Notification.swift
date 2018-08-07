@@ -13,7 +13,7 @@ extension String: NotificationTarget {}
 extension Data: NotificationTarget {}
 
 extension Pusher {
-	public class Notification {
+	open class Notification {
 		public var payload: [String: Any]?
 		public var target: NotificationTarget?
 		public var title: String?
@@ -29,6 +29,18 @@ extension Pusher {
 			self.payload = payload
 			self.target = target
 			self.identifier = Int(Date().timeIntervalSince1970)
+		}
+		
+		public init(incoming: [AnyHashable: Any]) {
+			self.identifier = 0
+			self.payload = incoming as? [String: Any] ?? [:]
+			
+			if let aps = incoming["aps"] as? [String: Any] {
+				self.title = aps["title"] as? String
+				self.badgeCount = aps["badge"] as? Int
+				self.soundName = aps["sound"] as? String
+				self.contentAvailable = aps["content-available"] as? Bool ?? false
+			}
 		}
 
 		var fullJSONPayload: [String: Any] {
