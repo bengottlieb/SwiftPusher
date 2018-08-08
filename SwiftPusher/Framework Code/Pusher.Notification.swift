@@ -17,10 +17,13 @@ extension Pusher {
 		public var payload: [String: Any]?
 		public var target: NotificationTarget?
 		public var title: String?
+		public var category: String?
 		public var soundName: String?
+		public var threadID: String?
 		public var badgeCount: Int?
 		public var contentAvailable = false
-		
+		public var mutableContent = false
+
 		
 		public let identifier: Int
 		public var priority = 5
@@ -36,22 +39,32 @@ extension Pusher {
 			self.payload = incoming as? [String: Any] ?? [:]
 			
 			if let aps = incoming["aps"] as? [String: Any] {
-				self.title = aps["title"] as? String
+				self.threadID = aps["threadID"] as? String
+				self.title = aps["alert"] as? String
+				self.category = aps["category"] as? String
 				self.badgeCount = aps["badge"] as? Int
 				self.soundName = aps["sound"] as? String
 				self.contentAvailable = aps["content-available"] as? Bool ?? false
+				self.mutableContent = aps["mutable-content"] as? Bool ?? false
 			}
 		}
 
 		var fullJSONPayload: [String: Any] {
-			var aps = self.payload ?? [:]
+			var aps: [String: Any] = [:]
 			
+			if let threadID = self.threadID { aps["threadID"] = threadID }
 			if let title = self.title { aps["alert"] = title }
+			if let category = self.category { aps["category"] = category }
+			if self.mutableContent { aps["mutable-content"] = 1 }
 			if self.contentAvailable { aps["content-available"] = 1 }
 			if let badgeCount = self.badgeCount { aps["badge"] = badgeCount }
 			if let soundName = self.soundName { aps["sound"] = soundName }
-
-			return self.payload ?? ["aps": aps]
+			
+			var fullJSON = self.payload ?? [:]
+			fullJSON["aps"] = aps
+			
+			
+			return fullJSON
 		}
 		
 		public var payloadData: Data? {
