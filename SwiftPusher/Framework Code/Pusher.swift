@@ -15,6 +15,7 @@ public class Pusher {
 	public enum Host: String { case sandbox = "gateway.sandbox.push.apple.com", production = "gateway.push.apple.com"
 		var name: String { return self.rawValue }
 	}
+	public var isApplicationInTheBackground = false { didSet { if self.isApplicationInTheBackground { self.disconnect() }}}
 	public static let defaultPort = 2195
 	var activeConnection: SSLConnection!
 	var internalQueue = DispatchQueue(label: "Pusher_queue")
@@ -25,8 +26,6 @@ public class Pusher {
 		
 		self.disconnect()
 		self.certificate = certificate
-		self.activeConnection = SSLConnection(certificate: certificate)
-		try self.activeConnection?.connect()
 	}
 	
 	public func restartConnection() throws {
@@ -35,12 +34,28 @@ public class Pusher {
 		try self.load(certificate: cert)
 	}
 	
-	public func disconnect() {
-		self.activeConnection?.disconnect()
-		self.certificate = nil
+	@discardableResult public func connect() -> Bool {
+		guard self.activeConnection?.isConnected != true else { return true }
+		guard let cert = self.certificate else { return false }
+		
+		self.activeConnection = SSLConnection(certificate: cert)
+		do {
+			try self.activeConnection?.connect()
+			return true
+		} catch {
+			return false
+		}
 	}
 	
-	public func send(_ notification: Notification, completion: @escaping (Swift.Error?) -> Void) {
+	public func disconnect() {
+		self.activeConnection?.disconnect()
+		self.activeConnection = nil
+	}
+	
+	public func send(_ notification: Notification, retryCount: Int = 1, completion: @escaping (Swift.Error?) -> Void) {
+		self.connect()
+		defer { if self.isApplicationInTheBackground { self.activeConnection.closeAfterRead = true }}
+		
 		guard let data = notification.payloadData else {
 			completion(Pusher.Error.unableToConstructNotificationData)
 			return
@@ -89,7 +104,13 @@ public class Pusher {
 				}
 			}
 		} catch {
-			completion(error)
+			if retryCount > 0 {
+				print("Error when sending: \(error), retrying")
+				try? self.restartConnection()
+				self.send(notification, retryCount: retryCount - 1, completion: completion)
+			} else {
+				completion(error)
+			}
 		}
 	}
 }

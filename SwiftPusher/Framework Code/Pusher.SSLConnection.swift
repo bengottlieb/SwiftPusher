@@ -15,10 +15,13 @@ extension Pusher {
 		var sslSocket: Int32?
 		var port = Pusher.defaultPort
 		var host = Pusher.Host.sandbox
+		var closeAfterRead = false
 
 		var context: SSLContext!
 		var certificate: Certificate
 		var socketContext = UnsafeMutablePointer<Int32>.allocate(capacity: 1)
+		
+		var isConnected: Bool { return self.context != nil }
 		
 		init(certificate: Certificate) {
 			self.certificate = certificate
@@ -43,6 +46,7 @@ extension Pusher {
 			
 			self.context = nil
 			self.sslSocket = nil
+			self.closeAfterRead = false
 		}
 		
 		func read(count: Int) throws -> Data {
@@ -55,6 +59,7 @@ extension Pusher {
 			}
 			let result = SSLRead(self.context, buffer, count, &readCount)
 			
+			defer { if self.closeAfterRead { self.disconnect() }}
 			print("Read \(readCount) bytes")
 			switch result {
 			case errSecSuccess, errSSLWouldBlock: return Data(bytes: buffer, count: readCount)
