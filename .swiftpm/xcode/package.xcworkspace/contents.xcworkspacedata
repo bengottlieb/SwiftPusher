@@ -2,6 +2,6 @@
 <Workspace
    version = "1.0">
    <FileRef
-      location = "self:/Users/ben/Desktop/CrossPlatformKit/SwiftPusher.xcodeproj">
+      location = "self:">
    </FileRef>
 </Workspace>
