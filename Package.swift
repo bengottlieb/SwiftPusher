@@ -18,7 +18,7 @@ let package = Package(
     ],
     dependencies: [
 		.package(name: "SwiftJWT", url: "https://github.com/Kitura/Swift-JWT", from: "4.0.0"),
-		.package(name: "Nearby", url: "https://github.com/bengottlieb/nearby", from: "0.9.8"),
+		.package(name: "Nearby", url: "https://github.com/bengottlieb/nearby", from: "0.9.9"),
 		.package(name: "Suite", url: "https://github.com/bengottlieb/suite", from: "1.0.79"),
     ],
     targets: [

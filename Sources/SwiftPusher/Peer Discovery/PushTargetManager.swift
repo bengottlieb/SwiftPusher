@@ -7,10 +7,7 @@
 
 import Suite
 import Nearby
-
-#if canImport(UIKit)
-import UIKit
-#endif
+import CrossPlatformKit
 
 public class PushTargetManager: NSObject, ObservableObject {
 	public static let instance = PushTargetManager()
@@ -24,11 +21,9 @@ public class PushTargetManager: NSObject, ObservableObject {
 		devices.forEach { $0.send(token: apnsToken) }
 	}
 	
-	public func setup() {
-		NearbySession.instance.serviceType = "pushnowsai"
-		#if os(iOS)
-			NearbySession.instance.startup(withRouter: self, application: UIApplication.shared)
-		#endif
+	public func setup(serviceType: String) {
+		NearbySession.instance.serviceType = serviceType
+		NearbySession.instance.startup(withRouter: self, application: UXApplication.shared)
 		addAsObserver(of: NearbyDevice.Notifications.deviceConnected, selector: #selector(deviceConnected))
 	}
 	
