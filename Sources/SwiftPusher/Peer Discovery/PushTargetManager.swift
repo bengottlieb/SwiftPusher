@@ -47,6 +47,10 @@ class APNSTokenMessage: NearbyMessage {
 }
 
 extension PushTargetManager: NearbyMessageRouter {
+	public func didDiscover(device: Nearby.NearbyDevice) {
+		print("New device: \(device)")
+	}
+	
 	public var fileID: String {
 		#file
 	}
