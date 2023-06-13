@@ -64,6 +64,9 @@ public class Pusher {
 		  "apns-push-type": background ? "background" : "alert",
 		  "apns-priority": background ? "5" : "10",
 		]
+		
+		PusherLog.instance.log("Sending to \(token)")
+
 		var apsCopy = aps
 		if background { apsCopy["content-available"] = 1 }
 		let url = server.url.appendingPathComponent(path)
@@ -74,7 +77,12 @@ public class Pusher {
 		request.allHTTPHeaderFields = headers
 		
 		let r = try await URLSession.shared.data(for: request)
-		print(r)
+		
+		var results = "Push Results: \((r.1 as? HTTPURLResponse)?.statusCode ?? 0)"
+		if let string = String(data: r.0) {
+			results += "\n\(string)"
+		}
+		PusherLog.instance.log(results)
 	}
 
 }
