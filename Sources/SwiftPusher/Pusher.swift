@@ -26,30 +26,10 @@ public class Pusher {
 	var bundleID = ""
 	public var server = Server.sandbox
 	
-	public func send(message: String, body: String? = nil, sound: String? = "default", to token: String) async throws {
+	public func send(message: String, body: String? = nil, sound: String? = "default", to token: String, background: Bool = false) async throws {
 		
-		let payload = APNS(aps: .init(alert: .init(title: message, body: body), sound: sound))
-		try await send(payload: payload.aps.asJSON(), to: token)
-		
-//		assert(!teamID.isEmpty && !bundleID.isEmpty && key != nil, "Please call Pusher.instance.setup(teamID:key:bundleID:) before sending.")
-//
-//		let path = "/3/device/\(token)"
-//		let jwt = try buildJWT()
-//		let headers: [String: String] = [
-//		  "apns-topic": bundleID,
-//		  "authorization": "bearer \(jwt)",
-//		  "Content-Type": "application/json; charset=utf-8",
-//		]
-//		let payload = APNS(aps: .init(alert: .init(title: message, body: body), sound: sound))
-//		let url = server.url.appendingPathComponent(path)
-//		var request = URLRequest(url: url)
-//		let body = try JSONEncoder().encode(payload)
-//		request.httpBody = body
-//		request.httpMethod = "post"
-//		request.allHTTPHeaderFields = headers
-//
-//		let r = try await URLSession.shared.data(for: request)
-//		print(r)
+		let payload = APNS(alert: .init(title: message, body: body), sound: sound)
+		try await send(payload: payload.asJSON(), to: token, background: background)
 	}
 
 	public func send(payload aps: [String: Any], to token: String, background: Bool = false) async throws {
@@ -78,7 +58,13 @@ public class Pusher {
 		
 		let r = try await URLSession.shared.data(for: request)
 		
-		var results = "Push Results: \((r.1 as? HTTPURLResponse)?.statusCode ?? 0)"
+		var results = "Push Results: "
+		if let response = r.1 as? HTTPURLResponse {
+			results += "\(response.statusCode)"
+			if let header = response.allHeaderFields["apns-unique-id"] as? String {
+				results += "\n\(header)\n"
+			}
+		}
 		if let string = String(data: r.0) {
 			results += "\n\(string)"
 		}

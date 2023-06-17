@@ -9,16 +9,12 @@ import Foundation
 
 extension Pusher {
 	struct APNS: Encodable {
-		let aps: APS
+		let alert: Alert
+		let sound: String?
 		
-		struct APS: Encodable {
-			let alert: Alert
-			let sound: String?
-			
-			struct Alert: Encodable {
-				let title: String?
-				let body: String?
-			}
+		struct Alert: Encodable {
+			let title: String?
+			let body: String?
 		}
 	}
 }
