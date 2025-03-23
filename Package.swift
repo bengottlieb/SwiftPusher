@@ -18,8 +18,8 @@ let package = Package(
     ],
     dependencies: [
 		.package(name: "SwiftJWT", url: "https://github.com/Kitura/Swift-JWT", from: "4.0.0"),
-		.package(name: "Nearby", url: "https://github.com/bengottlieb/nearby", from: "0.9.9"),
-		.package(name: "Suite", url: "https://github.com/bengottlieb/suite", from: "1.0.79"),
+		.package(name: "Nearby", url: "https://github.com/ios-tooling/nearby", from: "0.10.11"),
+		.package(name: "Suite", url: "https://github.com/ios-tooling/suite", from: "1.0.79"),
     ],
     targets: [
         // Targets are the basic building blocks of a package. A target can define a module or a test suite.
